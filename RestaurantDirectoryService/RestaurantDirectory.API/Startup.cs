@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MySql.Data.MySqlClient;
 using RestaurantDirectory.Command;
 using RestaurantDirectory.Command.Commands.City;
+using RestaurantDirectory.Query.Queries.City;
 using System.Data;
 
 namespace RestaurantDirectory.API
@@ -30,7 +31,7 @@ namespace RestaurantDirectory.API
             services.AddDbContext<RestaurantDbContext>(options => options.UseMySql(connectionString));
             services.AddScoped<IDbConnection>(x => new MySqlConnection(connectionString));
 
-            services.AddMediatR(typeof(AddCity).Assembly);
+            services.AddMediatR(typeof(AddCity).Assembly, typeof(GetCities).Assembly);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RestaurantDirectory.Command\RestaurantDirectory.Command.csproj" />
+    <ProjectReference Include="..\RestaurantDirectory.Query\RestaurantDirectory.Query.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantDirectory.Command.Commands.City;
+using RestaurantDirectory.Query.Dtos;
+using RestaurantDirectory.Query.Queries.City;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace RestaurantDirectory.API.Controllers
@@ -20,6 +23,12 @@ namespace RestaurantDirectory.API.Controllers
         public async Task<int> CreateCity(AddCity.Command command)
         {
             return await _mediator.Send(command);
+        }
+
+        [HttpGet]
+        public async Task<IEnumerable<CityDto>> GetCities()
+        {
+            return await _mediator.Send(new GetCities.Query());
         }
     }
 }
