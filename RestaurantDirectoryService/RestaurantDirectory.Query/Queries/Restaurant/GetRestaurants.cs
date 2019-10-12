@@ -10,12 +10,12 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
 {
     public class GetRestaurants
     {
-        public class Query : IRequest<IEnumerable<RestaurantDto>>
+        public class Query : IRequest<IEnumerable<RestaurantListDto>>
         {
             // introduce filters later
         }
 
-        public class Handler : IRequestHandler<Query, IEnumerable<RestaurantDto>>
+        public class Handler : IRequestHandler<Query, IEnumerable<RestaurantListDto>>
         {
             private readonly IDbConnection _connection;
 
@@ -24,7 +24,7 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
                 _connection = connection;
             }
 
-            public async Task<IEnumerable<RestaurantDto>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<IEnumerable<RestaurantListDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var query = @"  SELECT		r.Id,
 			                                ci.Name City,
@@ -40,7 +40,7 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
 			                                City ci ON ci.Id = r.CityId
                                 GROUP BY	r.Id";
 
-                return await _connection.QueryAsync<RestaurantDto>(query);
+                return await _connection.QueryAsync<RestaurantListDto>(query);
             }
         }
     }

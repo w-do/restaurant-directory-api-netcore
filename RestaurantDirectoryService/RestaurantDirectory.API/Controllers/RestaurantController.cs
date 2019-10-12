@@ -26,7 +26,7 @@ namespace RestaurantDirectory.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<RestaurantDto>> GetRestaurants()
+        public async Task<IEnumerable<RestaurantListDto>> GetRestaurants()
         {
             return await _mediator.Send(new GetRestaurants.Query());
         }

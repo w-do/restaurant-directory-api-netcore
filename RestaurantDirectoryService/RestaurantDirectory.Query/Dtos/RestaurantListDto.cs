@@ -1,6 +1,6 @@
 ﻿namespace RestaurantDirectory.Query.Dtos
 {
-    public class RestaurantDto
+    public class RestaurantListDto
     {
         public int Id { get; set; }
         public string City { get; set; }
