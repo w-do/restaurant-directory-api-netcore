@@ -25,6 +25,12 @@ namespace RestaurantDirectory.API.Controllers
             return await _mediator.Send(command);
         }
 
+        [HttpGet("{id}")]
+        public async Task<RestaurantDetailDto> GetRestaurant(int id)
+        {
+            return await _mediator.Send(new GetRestaurant.Query { Id = id });
+        }
+
         [HttpGet]
         public async Task<IEnumerable<RestaurantListDto>> GetRestaurants()
         {

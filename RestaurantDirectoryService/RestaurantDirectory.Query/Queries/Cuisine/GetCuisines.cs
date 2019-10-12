@@ -25,7 +25,7 @@ namespace RestaurantDirectory.Query.Queries.Cuisine
             {
                 var query = @"  SELECT  Id,
                                         Name
-                                FROM    City";
+                                FROM    City;";
 
                 return await _connection.QueryAsync<CuisineDto>(query);
             }

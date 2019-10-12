@@ -38,7 +38,7 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
 			                                Restaurant_Cuisine rc ON r.Id = rc.RestaurantId INNER JOIN
 			                                Cuisine cu ON cu.Id = rc.CuisineId INNER JOIN
 			                                City ci ON ci.Id = r.CityId
-                                GROUP BY	r.Id";
+                                GROUP BY	r.Id;";
 
                 return await _connection.QueryAsync<RestaurantListDto>(query);
             }
