@@ -27,7 +27,7 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
             public async Task<IEnumerable<RestaurantDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var query = @"  SELECT		r.Id,
-			                                ci.Name AS CityName,
+			                                ci.Name City,
                                             group_concat(cu.Name SEPARATOR ', ') Cuisines,
 			                                r.Name,
                                             r.Notes,
