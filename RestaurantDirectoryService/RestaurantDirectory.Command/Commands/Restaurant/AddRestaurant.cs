@@ -21,7 +21,7 @@ namespace RestaurantDirectory.Command.Commands.Restaurant
             public string Yelp { get; set; }
         }
 
-        public class Handler: IRequestHandler<Command, int>
+        public class Handler : IRequestHandler<Command, int>
         {
             private readonly RestaurantDbContext _context;
 
@@ -47,7 +47,7 @@ namespace RestaurantDirectory.Command.Commands.Restaurant
                     _context.Restaurants.Add(restaurant);
                     _context.SaveChanges();
 
-                    if (request.CuisineIds.Any())
+                    if (request.CuisineIds?.Any() ?? false)
                     {
                         var restaurantCuisines = request.CuisineIds.Select(x => new RestaurantCuisineModel
                         {

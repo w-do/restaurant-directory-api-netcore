@@ -34,9 +34,9 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
                                             r.ParkingLot,
                                             r.Tried,
                                             r.Yelp
-                                FROM		Restaurant r INNER JOIN
-			                                Restaurant_Cuisine rc ON r.Id = rc.RestaurantId INNER JOIN
-			                                Cuisine cu ON cu.Id = rc.CuisineId INNER JOIN
+                                FROM		Restaurant r LEFT OUTER JOIN
+			                                Restaurant_Cuisine rc ON r.Id = rc.RestaurantId LEFT OUTER JOIN
+			                                Cuisine cu ON cu.Id = rc.CuisineId LEFT OUTER JOIN
 			                                City ci ON ci.Id = r.CityId
                                 GROUP BY	r.Id;";
 
