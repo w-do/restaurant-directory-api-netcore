@@ -36,5 +36,19 @@ namespace RestaurantDirectory.API.Controllers
         {
             return await _mediator.Send(new GetRestaurants.Query());
         }
+
+        [HttpPut("{id}")] 
+        public async Task<IActionResult> UpdateRestaurant([FromRoute] int id, [FromBody] UpdateRestaurant.Command command)
+        {
+            command.Id = id;
+            var found = await _mediator.Send(command);
+
+            if (!found)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        }
     }
 }

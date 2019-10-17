@@ -1,4 +1,5 @@
-﻿using RestaurantDirectory.Command.Enums;
+﻿using RestaurantDirectory.Command.Commands.Restaurant;
+using RestaurantDirectory.Command.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,5 +21,15 @@ namespace RestaurantDirectory.Command.Models
         public bool Tried { get; set; }
         [MaxLength(512)]
         public string Yelp { get; set; }
+
+        public void Update(UpdateRestaurant.Command update)
+        {
+            CityId = update.CityId;
+            Name = update.Name;
+            Notes = update.Notes;
+            ParkingLot = update.ParkingLot;
+            Tried = update.Tried;
+            Yelp = update.Yelp;
+        }
     }
 }

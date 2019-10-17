@@ -28,7 +28,8 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
             {
                 var query = @"  SELECT		r.Id,
 			                                ci.Name City,
-                                            group_concat(cu.Name SEPARATOR ', ') Cuisines,
+                                            --group_concat(cu.Name SEPARATOR ', ') Cuisines,
+                                            STRING_AGG(cu.Name, ', ') Cuisines,
 			                                r.Name,
                                             r.Notes,
                                             r.ParkingLot,
@@ -38,7 +39,8 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
 			                                Restaurant_Cuisine rc ON r.Id = rc.RestaurantId LEFT OUTER JOIN
 			                                Cuisine cu ON cu.Id = rc.CuisineId LEFT OUTER JOIN
 			                                City ci ON ci.Id = r.CityId
-                                GROUP BY	r.Id;";
+                                --GROUP BY	r.Id;
+                                GROUP BY    r.Id, ci.Name, r.Name, r.Notes, r.ParkingLot, r.Tried, r.Yelp;";
 
                 return await _connection.QueryAsync<RestaurantListDto>(query);
             }
