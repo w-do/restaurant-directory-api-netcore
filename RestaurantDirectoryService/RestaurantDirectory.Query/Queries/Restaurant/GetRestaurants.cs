@@ -3,6 +3,7 @@ using MediatR;
 using RestaurantDirectory.Query.Dtos;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,47 +31,7 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
 
             public async Task<IEnumerable<RestaurantListDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var query = @"  SELECT      r.Id,
-                                            ci.Name City,
-                                            group_concat(cu.Name SEPARATOR ', ') Cuisines,
-                                            r.Name,
-                                            r.Notes,
-                                            r.ParkingLot,
-                                            r.Tried,
-                                            r.Yelp
-                                FROM        Restaurant r LEFT OUTER JOIN
-                                            Restaurant_Cuisine rc ON r.Id = rc.RestaurantId LEFT OUTER JOIN
-                                            Cuisine cu ON cu.Id = rc.CuisineId LEFT OUTER JOIN
-                                            City ci ON ci.Id = r.CityId
-                                WHERE       (@SearchTerm IS NULL OR
-                                                LOWER(r.Name) LIKE CONCAT('%', @SearchTerm, '%') OR
-                                                LOWER(r.Notes) LIKE CONCAT('%', @SearchTerm, '%')) AND
-                                            (@Tried IS NULL OR r.Tried = @Tried)
-                                GROUP BY    r.Id;";
-                //var query = @"  SELECT      r.Id,
-                //                            ci.Name City,
-                //                            STRING_AGG(cu.Name, ', ') Cuisines,
-                //                            r.Name,
-                //                            r.Notes,
-                //                            r.ParkingLot,
-                //                            r.Tried,
-                //                            r.Yelp
-                //                FROM        Restaurant r LEFT OUTER JOIN
-                //                            Restaurant_Cuisine rc ON r.Id = rc.RestaurantId LEFT OUTER JOIN
-                //                            Cuisine cu ON cu.Id = rc.CuisineId LEFT OUTER JOIN
-                //                            City ci ON ci.Id = r.CityId
-                //                WHERE       --(city stuff) AND
-                //                            --(cuisine stuff) AND
-                //                            --(parking lot stuff) AND
-                //                            (@SearchTerm IS NULL OR
-                //                                LOWER(r.Name) LIKE '%' + @SearchTerm + '%' OR
-                //                                LOWER(r.Notes) LIKE '%' + @SearchTerm + '%') AND
-                //                            (@Tried IS NULL OR r.Tried = @Tried)
-                //                GROUP BY    r.Id, ci.Name, r.Name, r.Notes, r.ParkingLot, r.Tried, r.Yelp;";
-
-                request.SearchTerm = string.IsNullOrWhiteSpace(request.SearchTerm)
-                    ? null
-                    : request.SearchTerm.ToLower();
+                var query = CreateSql(request);
 
                 var queryParams = new
                 {
@@ -82,6 +43,71 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
                 };
 
                 return await _connection.QueryAsync<RestaurantListDto>(query, queryParams);
+            }
+
+            private string CreateSql(Query query)
+            {
+                var whereConditions = new List<string>();
+
+                if (query.CityIds != null && query.CityIds.Any())
+                {
+                    whereConditions.Add("(r.CityId IN @CityIds)");
+                }
+                if (query.CuisineIds != null && query.CuisineIds.Any())
+                {
+                    whereConditions.Add("(rc.CuisineId IN @CuisineIds)");
+                }
+                if (query.ParkingLot != null && query.ParkingLot.Any())
+                {
+                    whereConditions.Add("(r.ParkingLot IN @ParkingLot)");
+                }
+                if (!string.IsNullOrWhiteSpace(query.SearchTerm))
+                {
+                    whereConditions.Add("(r.Name LIKE '%' + @SearchTerm + '%' OR r.Notes LIKE '%' + @SearchTerm + '%')");
+                }
+                if (query.Tried != null)
+                {
+                    whereConditions.Add("(r.Tried = @Tried)");
+                }
+
+                var whereClause = whereConditions.Any()
+                    ? $"WHERE {string.Join(" AND ", whereConditions)}"
+                    : "";
+
+                // currently if user filters by cuisine and a restaurant with multiple cuisines
+                // is included, only the cuisines specified in the filter will be displayed.
+                // look into this later
+                return $@"  SELECT      r.Id,
+                                        ci.Name City,
+                                        group_concat(cu.Name SEPARATOR ', ') Cuisines,
+                                        r.Name,
+                                        r.Notes,
+                                        r.ParkingLot,
+                                        r.Tried,
+                                        r.Yelp
+                            FROM        Restaurant r LEFT OUTER JOIN
+                                        Restaurant_Cuisine rc ON r.Id = rc.RestaurantId LEFT OUTER JOIN
+                                        Cuisine cu ON cu.Id = rc.CuisineId LEFT OUTER JOIN
+                                        City ci ON ci.Id = r.CityId
+                            {whereClause}
+                            GROUP BY    r.Id
+                            LIMIT       100;";
+
+                //return $@"  SELECT TOP(100)
+                //                        r.Id,
+                //                        ci.Name City,
+                //                        STRING_AGG(cu.Name, ', ') Cuisines,
+                //                        r.Name,
+                //                        r.Notes,
+                //                        r.ParkingLot,
+                //                        r.Tried,
+                //                        r.Yelp
+                //            FROM        Restaurant r LEFT OUTER JOIN
+                //                        Restaurant_Cuisine rc ON r.Id = rc.RestaurantId LEFT OUTER JOIN
+                //                        Cuisine cu ON cu.Id = rc.CuisineId LEFT OUTER JOIN
+                //                        City ci ON ci.Id = r.CityId
+                //            {whereClause}
+                //            GROUP BY    r.Id, ci.Name, r.Name, r.Notes, r.ParkingLot, r.Tried, r.Yelp;";
             }
         }
     }
