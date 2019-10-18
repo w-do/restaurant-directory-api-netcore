@@ -29,10 +29,10 @@ namespace RestaurantDirectory.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             var connectionString = Configuration.GetConnectionString("RestaurantDbConnection");
-            //services.AddDbContext<RestaurantDbContext>(options => options.UseMySql(connectionString));
-            //services.AddScoped<IDbConnection>(x => new MySqlConnection(connectionString));
-            services.AddDbContext<RestaurantDbContext>(options => options.UseSqlServer(connectionString));
-            services.AddScoped<IDbConnection>(x => new SqlConnection(connectionString));
+            services.AddDbContext<RestaurantDbContext>(options => options.UseMySql(connectionString));
+            services.AddScoped<IDbConnection>(x => new MySqlConnection(connectionString));
+            //services.AddDbContext<RestaurantDbContext>(options => options.UseSqlServer(connectionString));
+            //services.AddScoped<IDbConnection>(x => new SqlConnection(connectionString));
 
             services.AddMediatR(typeof(AddCity).Assembly, typeof(GetCities).Assembly);
         }
@@ -51,8 +51,8 @@ namespace RestaurantDirectory.API
             }
 
             app.UseCors(x => x.AllowAnyMethod()
-                //.WithOrigins("http://localhost:4200")
-                .AllowAnyOrigin()
+                .WithOrigins("http://localhost:4200")
+                //.AllowAnyOrigin()
                 .AllowAnyHeader());
             app.UseHttpsRedirection();
             app.UseMvc();
