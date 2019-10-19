@@ -5,7 +5,6 @@ using RestaurantDirectory.Command.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +12,7 @@ namespace RestaurantDirectory.Command.Commands.Restaurant
 {
     public class UpdateRestaurant
     {
-        public class Command : IRequest<bool>
+        public class Command : IRequest<Unit>
         {
             public int Id { get; set; }
             public int? CityId { get; set; }
@@ -25,7 +24,7 @@ namespace RestaurantDirectory.Command.Commands.Restaurant
             public string Yelp { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command, bool>
+        public class Handler : IRequestHandler<Command, Unit>
         {
             private readonly RestaurantDbContext _context;
 
@@ -34,13 +33,14 @@ namespace RestaurantDirectory.Command.Commands.Restaurant
                 _context = context;
             }
 
-            public async Task<bool> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
                 var restaurant = _context.Restaurants.Find(request.Id);
 
                 if (restaurant == null)
                 {
-                    return false;
+                    // if I wanted to be truly RESTful I'd create a restaurant here but. eh.
+                    return Unit.Value;
                 }
 
                 var cuisinesTask = _context.RestaurantCuisines
@@ -72,8 +72,7 @@ namespace RestaurantDirectory.Command.Commands.Restaurant
 
                 _context.SaveChanges();
 
-                return true;
-
+                return Unit.Value;
             }
         }
     }

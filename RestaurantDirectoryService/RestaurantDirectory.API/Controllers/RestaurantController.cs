@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantDirectory.Command.Commands.Restaurant;
 using RestaurantDirectory.Query.Dtos;
 using RestaurantDirectory.Query.Queries.Restaurant;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -26,6 +25,13 @@ namespace RestaurantDirectory.API.Controllers
             return await _mediator.Send(command);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRestaurant(int id)
+        {
+            await _mediator.Send(new DeleteRestaurant.Command { Id = id });
+            return NoContent();
+        }
+
         [HttpGet("{id}")]
         public async Task<RestaurantDetailDto> GetRestaurant(int id)
         {
@@ -39,17 +45,10 @@ namespace RestaurantDirectory.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRestaurant(int id, UpdateRestaurant.Command command)
+        public async Task UpdateRestaurant(int id, UpdateRestaurant.Command command)
         {
             command.Id = id;
-            var found = await _mediator.Send(command);
-
-            if (!found)
-            {
-                return NotFound();
-            }
-
-            return Ok();
+            await _mediator.Send(command);
         }
     }
 }
