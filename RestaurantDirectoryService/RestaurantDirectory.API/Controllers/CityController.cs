@@ -25,10 +25,30 @@ namespace RestaurantDirectory.API.Controllers
             return await _mediator.Send(command);
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCity(int id)
+        {
+            await _mediator.Send(new DeleteCity.Command { Id = id });
+            return NoContent();
+        }
+
         [HttpGet]
         public async Task<IEnumerable<CityDto>> GetCities()
         {
             return await _mediator.Send(new GetCities.Query());
+        }
+
+        [HttpGet("{id}/restaurants")]
+        public async Task<IEnumerable<string>> GetCityRestaurants(int id)
+        {
+            return await _mediator.Send(new GetCityRestaurants.Query { Id = id });
+        }
+
+        [HttpPut("{id}")]
+        public async Task UpdateCity(int id, UpdateCity.Command command)
+        {
+            command.Id = id;
+            await _mediator.Send(command);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace RestaurantDirectory.API
             }
 
             app.UseCors(x => x.AllowAnyMethod()
-                .WithOrigins("http://localhost:4200")
+                .WithOrigins(Configuration.GetValue<string>("WebOrigin"))
                 //.AllowAnyOrigin()
                 .AllowAnyHeader());
             app.UseHttpsRedirection();
