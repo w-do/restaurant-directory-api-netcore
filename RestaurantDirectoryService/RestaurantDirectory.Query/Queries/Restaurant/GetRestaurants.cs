@@ -92,22 +92,6 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
                             {whereClause}
                             GROUP BY    r.Id
                             LIMIT       100;";
-
-                //return $@"  SELECT TOP(100)
-                //                        r.Id,
-                //                        ci.Name City,
-                //                        STRING_AGG(cu.Name, ', ') Cuisines,
-                //                        r.Name,
-                //                        r.Notes,
-                //                        r.ParkingLot,
-                //                        r.Tried,
-                //                        r.Yelp
-                //            FROM        Restaurant r LEFT OUTER JOIN
-                //                        Restaurant_Cuisine rc ON r.Id = rc.RestaurantId LEFT OUTER JOIN
-                //                        Cuisine cu ON cu.Id = rc.CuisineId LEFT OUTER JOIN
-                //                        City ci ON ci.Id = r.CityId
-                //            {whereClause}
-                //            GROUP BY    r.Id, ci.Name, r.Name, r.Notes, r.ParkingLot, r.Tried, r.Yelp;";
             }
         }
     }

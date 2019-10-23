@@ -10,7 +10,6 @@ using RestaurantDirectory.Command;
 using RestaurantDirectory.Command.Commands.City;
 using RestaurantDirectory.Query.Queries.City;
 using System.Data;
-using System.Data.SqlClient;
 
 namespace RestaurantDirectory.API
 {
@@ -31,8 +30,6 @@ namespace RestaurantDirectory.API
             var connectionString = Configuration.GetConnectionString("RestaurantDbConnection");
             services.AddDbContext<RestaurantDbContext>(options => options.UseMySql(connectionString));
             services.AddScoped<IDbConnection>(x => new MySqlConnection(connectionString));
-            //services.AddDbContext<RestaurantDbContext>(options => options.UseSqlServer(connectionString));
-            //services.AddScoped<IDbConnection>(x => new SqlConnection(connectionString));
 
             services.AddMediatR(typeof(AddCity).Assembly, typeof(GetCities).Assembly);
         }

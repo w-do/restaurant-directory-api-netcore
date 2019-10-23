@@ -38,6 +38,12 @@ namespace RestaurantDirectory.API.Controllers
             return await _mediator.Send(new GetCities.Query());
         }
 
+        [HttpGet("{id}")]
+        public async Task<CityDto> GetCity(int id)
+        {
+            return await _mediator.Send(new GetCity.Query { Id = id });
+        }
+
         [HttpGet("{id}/restaurants")]
         public async Task<IEnumerable<string>> GetCityRestaurants(int id)
         {
