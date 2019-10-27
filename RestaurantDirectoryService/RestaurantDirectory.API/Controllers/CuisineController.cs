@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantDirectory.Command.Commands.Cuisine;
 using RestaurantDirectory.Query.Dtos;
 using RestaurantDirectory.Query.Queries.Cuisine;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,26 +21,26 @@ namespace RestaurantDirectory.API.Controllers
         }
 
         [HttpPost]
-        public async Task<int> CreateCuisine(AddCuisine.Command command)
+        public async Task<Guid> CreateCuisine(AddCuisine.Command command)
         {
             return await _mediator.Send(command);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCuisine(int id)
+        public async Task<IActionResult> DeleteCuisine(Guid id)
         {
             await _mediator.Send(new DeleteCuisine.Command { Id = id });
             return NoContent();
         }
 
         [HttpGet("{id}")]
-        public async Task<CuisineDto> GetCuisine(int id)
+        public async Task<CuisineDto> GetCuisine(Guid id)
         {
             return await _mediator.Send(new GetCuisine.Query { Id = id });
         }
 
         [HttpGet("{id}/restaurants")]
-        public async Task<IEnumerable<string>> GetCuisineRestaurants(int id)
+        public async Task<IEnumerable<string>> GetCuisineRestaurants(Guid id)
         {
             return await _mediator.Send(new GetCuisineRestaurants.Query { Id = id });
         }
@@ -51,7 +52,7 @@ namespace RestaurantDirectory.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task UpdateCuisine(int id, UpdateCuisine.Command command)
+        public async Task UpdateCuisine(Guid id, UpdateCuisine.Command command)
         {
             command.Id = id;
             await _mediator.Send(command);

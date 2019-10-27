@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using MediatR;
 using RestaurantDirectory.Query.Dtos;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
     {
         public class Query : IRequest<IEnumerable<RestaurantListDto>>
         {
-            public IEnumerable<int> CityIds { get; set; }
-            public IEnumerable<int> CuisineIds { get; set; }
+            public IEnumerable<Guid> CityIds { get; set; }
+            public IEnumerable<Guid> CuisineIds { get; set; }
             public IEnumerable<int> ParkingLot { get; set; }
             public string SearchTerm { get; set; }
             public bool? Tried { get; set; }
@@ -51,23 +52,23 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
 
                 if (query.CityIds != null && query.CityIds.Any())
                 {
-                    whereConditions.Add("(r.CityId IN @CityIds)");
+                    whereConditions.Add("(r.city_id IN @CityIds)");
                 }
                 if (query.CuisineIds != null && query.CuisineIds.Any())
                 {
-                    whereConditions.Add("(rc.CuisineId IN @CuisineIds)");
+                    whereConditions.Add("(rc.cuisine_id IN @CuisineIds)");
                 }
                 if (query.ParkingLot != null && query.ParkingLot.Any())
                 {
-                    whereConditions.Add("(r.ParkingLot IN @ParkingLot)");
+                    whereConditions.Add("(r.parking_lot IN @ParkingLot)");
                 }
                 if (!string.IsNullOrWhiteSpace(query.SearchTerm))
                 {
-                    whereConditions.Add("(r.Name LIKE '%' + @SearchTerm + '%' OR r.Notes LIKE '%' + @SearchTerm + '%')");
+                    whereConditions.Add("(r.name LIKE '%' + @SearchTerm + '%' OR r.notes LIKE '%' + @SearchTerm + '%')");
                 }
                 if (query.Tried != null)
                 {
-                    whereConditions.Add("(r.Tried = @Tried)");
+                    whereConditions.Add("(r.tried = @Tried)");
                 }
 
                 var whereClause = whereConditions.Any()
@@ -77,20 +78,20 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
                 // currently if user filters by cuisine and a restaurant with multiple cuisines
                 // is included, only the cuisines specified in the filter will be displayed.
                 // look into this later
-                return $@"  SELECT      r.Id,
-                                        ci.Name City,
-                                        group_concat(cu.Name SEPARATOR ', ') Cuisines,
-                                        r.Name,
-                                        r.Notes,
-                                        r.ParkingLot,
-                                        r.Tried,
-                                        r.Yelp
-                            FROM        Restaurant r LEFT OUTER JOIN
-                                        Restaurant_Cuisine rc ON r.Id = rc.RestaurantId LEFT OUTER JOIN
-                                        Cuisine cu ON cu.Id = rc.CuisineId LEFT OUTER JOIN
-                                        City ci ON ci.Id = r.CityId
+                return $@"  SELECT      r.id,
+                                        ci.name city,
+                                        string_agg(cu.name, ', ') cuisines,
+                                        r.name,
+                                        r.notes,
+                                        r.parking_lot parkinglot,
+                                        r.tried,
+                                        r.yelp
+                            FROM        restaurant r LEFT OUTER JOIN
+                                        restaurant_x_cuisine rc ON r.id = rc.restaurant_id LEFT OUTER JOIN
+                                        cuisine cu ON cu.id = rc.cuisine_id LEFT OUTER JOIN
+                                        city ci ON ci.id = r.city_id
                             {whereClause}
-                            GROUP BY    r.Id
+                            GROUP BY    r.id, ci.id
                             LIMIT       100;";
             }
         }

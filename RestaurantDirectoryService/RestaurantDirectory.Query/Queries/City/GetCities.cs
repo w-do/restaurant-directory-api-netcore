@@ -23,10 +23,10 @@ namespace RestaurantDirectory.Query.Queries.City
 
             public async Task<IEnumerable<CityDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var query = @"  SELECT      Id,
-                                            Name
-                                FROM        City
-                                ORDER BY    Name;";
+                var query = @"  SELECT      id,
+                                            name
+                                FROM        city
+                                ORDER BY    name;";
 
                 return await _connection.QueryAsync<CityDto>(query);
             }

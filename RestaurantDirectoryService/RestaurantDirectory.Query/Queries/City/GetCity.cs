@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using MediatR;
 using RestaurantDirectory.Query.Dtos;
+using System;
 using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace RestaurantDirectory.Query.Queries.City
     {
         public class Query : IRequest<CityDto>
         {
-            public int Id { get; set; }
+            public Guid Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, CityDto>
@@ -25,10 +26,10 @@ namespace RestaurantDirectory.Query.Queries.City
 
             public async Task<CityDto> Handle(Query request, CancellationToken cancellationToken)
             {
-                var query = @"  SELECT  Id,
-                                        Name
-                                FROM    City
-                                WHERE   Id = @Id";
+                var query = @"  SELECT  id,
+                                        name
+                                FROM    city
+                                WHERE   id = @Id;";
 
                 return await _connection.QueryFirstAsync<CityDto>(query, new { request.Id });
             }

@@ -1,15 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestaurantDirectory.Command.Models
 {
-    [Table("Restaurant_Cuisine")]
+    [Table("restaurant_x_cuisine")]
     public class RestaurantCuisineModel
     {
-        [ForeignKey("CuisineId")]
-        public CuisineModel Cuisine { get; set; }
-        public int CuisineId { get; set; }
-        [ForeignKey("RestaurantId")]
-        public RestaurantModel Restaurant { get; set; }
-        public int RestaurantId { get; set; }
+        [Column("cuisine_id")]
+        public Guid CuisineId { get; set; }
+        [Column("restaurant_id")]
+        public Guid RestaurantId { get; set; }
     }
 }

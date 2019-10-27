@@ -1,14 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestaurantDirectory.Command.Models
 {
-    [Table("City")]
+    [Table("city")]
     public class CityModel
     {
         [Key]
-        public int Id { get; set; }
+        [Column("id")]
+        public Guid Id { get; set; }
         [MaxLength(128)]
+        [Column("name")]
         public string Name { get; set; }
     }
 }

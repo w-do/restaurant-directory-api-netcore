@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RestaurantDirectory.Command.Commands.City;
 using RestaurantDirectory.Query.Dtos;
 using RestaurantDirectory.Query.Queries.City;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -20,13 +21,13 @@ namespace RestaurantDirectory.API.Controllers
         }
 
         [HttpPost]
-        public async Task<int> CreateCity(AddCity.Command command)
+        public async Task<Guid> CreateCity(AddCity.Command command)
         {
             return await _mediator.Send(command);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCity(int id)
+        public async Task<IActionResult> DeleteCity(Guid id)
         {
             await _mediator.Send(new DeleteCity.Command { Id = id });
             return NoContent();
@@ -39,19 +40,19 @@ namespace RestaurantDirectory.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<CityDto> GetCity(int id)
+        public async Task<CityDto> GetCity(Guid id)
         {
             return await _mediator.Send(new GetCity.Query { Id = id });
         }
 
         [HttpGet("{id}/restaurants")]
-        public async Task<IEnumerable<string>> GetCityRestaurants(int id)
+        public async Task<IEnumerable<string>> GetCityRestaurants(Guid id)
         {
             return await _mediator.Send(new GetCityRestaurants.Query { Id = id });
         }
 
         [HttpPut("{id}")]
-        public async Task UpdateCity(int id, UpdateCity.Command command)
+        public async Task UpdateCity(Guid id, UpdateCity.Command command)
         {
             command.Id = id;
             await _mediator.Send(command);

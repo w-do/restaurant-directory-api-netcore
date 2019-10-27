@@ -14,9 +14,9 @@ namespace RestaurantDirectory.Command.Commands.Restaurant
     {
         public class Command : IRequest<Unit>
         {
-            public int Id { get; set; }
-            public int? CityId { get; set; }
-            public IEnumerable<int> CuisineIds { get; set; }
+            public Guid Id { get; set; }
+            public Guid? CityId { get; set; }
+            public IEnumerable<Guid> CuisineIds { get; set; }
             public string Name { get; set; }
             public string Notes { get; set; }
             public ParkingLot? ParkingLot { get; set; }

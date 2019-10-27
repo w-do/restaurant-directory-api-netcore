@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,8 +11,9 @@ namespace RestaurantDirectory.Command.Commands.Restaurant
     {
         public class Command : IRequest<Unit>
         {
-            public int Id { get; set; }
+            public Guid Id { get; set; }
         }
+
         public class Handler : IRequestHandler<Command, Unit>
         {
             private readonly RestaurantDbContext _context;
@@ -32,7 +34,6 @@ namespace RestaurantDirectory.Command.Commands.Restaurant
                         .ToListAsync();
 
                     _context.Restaurants.Remove(restaurant);
-                    _context.RestaurantCuisines.RemoveRange(await restaurantCuisines);
 
                     _context.SaveChanges();
                 }

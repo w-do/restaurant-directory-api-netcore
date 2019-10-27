@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MySql.Data.MySqlClient;
+using Npgsql;
 using RestaurantDirectory.Command;
 using RestaurantDirectory.Command.Commands.City;
 using RestaurantDirectory.Query.Queries.City;
@@ -28,8 +28,8 @@ namespace RestaurantDirectory.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             var connectionString = Configuration.GetConnectionString("RestaurantDbConnection");
-            services.AddDbContext<RestaurantDbContext>(options => options.UseMySql(connectionString));
-            services.AddScoped<IDbConnection>(x => new MySqlConnection(connectionString));
+            services.AddDbContext<RestaurantDbContext>(options => options.UseNpgsql(connectionString), ServiceLifetime.Transient);
+            services.AddScoped<IDbConnection>(serviceProvider => new NpgsqlConnection(connectionString));
 
             services.AddMediatR(typeof(AddCity).Assembly, typeof(GetCities).Assembly);
         }

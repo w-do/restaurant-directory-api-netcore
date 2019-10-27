@@ -23,10 +23,10 @@ namespace RestaurantDirectory.Query.Queries.Cuisine
 
             public async Task<IEnumerable<CuisineDto>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var query = @"  SELECT      Id,
-                                            Name
-                                FROM        Cuisine
-                                ORDER BY    Name;";
+                var query = @"  SELECT      id,
+                                            name
+                                FROM        cuisine
+                                ORDER BY    name;";
 
                 return await _connection.QueryAsync<CuisineDto>(query);
             }

@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace RestaurantDirectory.Query.Dtos
 {
     public class RestaurantDetailDto
     {
-        public int Id { get; set; }
-        public int? CityId { get; set; }
-        public IEnumerable<int> CuisineIds { get; set; }
+        public Guid Id { get; set; }
+        public Guid? CityId { get; set; }
+        public IEnumerable<Guid> CuisineIds { get; set; }
         public string Name { get; set; }
         public string Notes { get; set; }
         public int? ParkingLot { get; set; }

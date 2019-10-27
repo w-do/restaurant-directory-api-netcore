@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading;
@@ -11,7 +12,7 @@ namespace RestaurantDirectory.Query.Queries.City
     {
         public class Query : IRequest<IEnumerable<string>>
         {
-            public int Id { get; set; }
+            public Guid Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, IEnumerable<string>>
@@ -25,10 +26,10 @@ namespace RestaurantDirectory.Query.Queries.City
 
             public async Task<IEnumerable<string>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var query = @"  SELECT      r.Name
-                                FROM        City c INNER JOIN
-                                            Restaurant r ON c.Id = r.CityId
-                                WHERE       c.Id = @Id
+                var query = @"  SELECT      r.name
+                                FROM        city c INNER JOIN
+                                            restaurant r ON c.id = r.city_id
+                                WHERE       c.id = @Id
                                 LIMIT       5;";
 
                 return await _connection.QueryAsync<string>(query, new { request.Id });

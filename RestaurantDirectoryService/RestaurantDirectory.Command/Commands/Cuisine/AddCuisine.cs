@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using RestaurantDirectory.Command.Models;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,12 +8,12 @@ namespace RestaurantDirectory.Command.Commands.Cuisine
 {
     public class AddCuisine
     {
-        public class Command : IRequest<int>
+        public class Command : IRequest<Guid>
         {
             public string Name { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command, int>
+        public class Handler : IRequestHandler<Command, Guid>
         {
             private readonly RestaurantDbContext _context;
 
@@ -21,9 +22,13 @@ namespace RestaurantDirectory.Command.Commands.Cuisine
                 _context = context;
             }
 
-            public async Task<int> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Guid> Handle(Command request, CancellationToken cancellationToken)
             {
-                var cuisine = new CuisineModel { Name = request.Name };
+                var cuisine = new CuisineModel
+                {
+                    Id = Guid.NewGuid(),
+                    Name = request.Name
+                };
 
                 _context.Cuisines.Add(cuisine);
                 _context.SaveChanges();

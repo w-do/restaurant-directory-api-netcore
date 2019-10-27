@@ -1,8 +1,10 @@
-﻿namespace RestaurantDirectory.Query.Dtos
+﻿using System;
+
+namespace RestaurantDirectory.Query.Dtos
 {
     public class CuisineDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
     }
 }

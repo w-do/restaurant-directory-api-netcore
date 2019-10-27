@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,7 +9,7 @@ namespace RestaurantDirectory.Command.Commands.City
     {
         public class Command : IRequest<Unit>
         {
-            public int Id { get; set; }
+            public Guid Id { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Unit>
