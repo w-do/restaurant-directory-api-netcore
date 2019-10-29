@@ -42,7 +42,7 @@ namespace RestaurantDirectory.API.Controllers
             }
             catch (Exception e)
             {
-                return Ok(e.Message);
+                return Ok(e);
             }
         }
 
