@@ -29,7 +29,7 @@ namespace RestaurantDirectory.API
 
             var connectionString = Configuration.GetConnectionString("RestaurantDbConnection");
             services.AddDbContext<RestaurantDbContext>(options => options.UseNpgsql(connectionString), ServiceLifetime.Transient);
-            services.AddScoped<IDbConnection>(serviceProvider => new NpgsqlConnection(connectionString));
+            services.AddScoped<IDbConnection, NpgsqlConnection>(serviceProvider => new NpgsqlConnection(connectionString));
 
             services.AddMediatR(typeof(AddCity).Assembly, typeof(GetCities).Assembly);
         }
