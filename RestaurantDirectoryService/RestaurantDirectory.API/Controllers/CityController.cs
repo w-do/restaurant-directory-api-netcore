@@ -36,14 +36,7 @@ namespace RestaurantDirectory.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCities()
         {
-            try
-            {
-                return Ok(await _mediator.Send(new GetCities.Query()));
-            }
-            catch (Exception e)
-            {
-                return Ok(e);
-            }
+            return Ok(await _mediator.Send(new GetCities.Query()));
         }
 
         [HttpGet("{id}")]
