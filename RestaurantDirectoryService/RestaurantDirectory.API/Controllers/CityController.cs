@@ -20,12 +20,6 @@ namespace RestaurantDirectory.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("test")]
-        public string Test()
-        {
-            return "hello, world!";
-        }
-
         [HttpPost]
         public async Task<Guid> CreateCity(AddCity.Command command)
         {
@@ -40,9 +34,16 @@ namespace RestaurantDirectory.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<CityDto>> GetCities()
+        public async Task<IActionResult> GetCities()
         {
-            return await _mediator.Send(new GetCities.Query());
+            try
+            {
+                return Ok(await _mediator.Send(new GetCities.Query()));
+            }
+            catch (Exception e)
+            {
+                return Ok(e.Message);
+            }
         }
 
         [HttpGet("{id}")]
