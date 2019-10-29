@@ -34,16 +34,14 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
             {
                 var query = CreateSql(request);
 
-                var queryParams = new
+                return await _connection.QueryAsync<RestaurantListDto>(query, new
                 {
                     request.CityIds,
                     request.CuisineIds,
                     request.ParkingLot,
                     request.SearchTerm,
                     request.Tried
-                };
-
-                return await _connection.QueryAsync<RestaurantListDto>(query, queryParams);
+                });
             }
 
             private string CreateSql(Query query)
@@ -52,19 +50,19 @@ namespace RestaurantDirectory.Query.Queries.Restaurant
 
                 if (query.CityIds != null && query.CityIds.Any())
                 {
-                    whereConditions.Add("(r.city_id IN @CityIds)");
+                    whereConditions.Add("(r.city_id = ANY (@CityIds))");
                 }
                 if (query.CuisineIds != null && query.CuisineIds.Any())
                 {
-                    whereConditions.Add("(rc.cuisine_id IN @CuisineIds)");
+                    whereConditions.Add("(rc.cuisine_id = ANY (@CuisineIds))");
                 }
                 if (query.ParkingLot != null && query.ParkingLot.Any())
                 {
-                    whereConditions.Add("(r.parking_lot IN @ParkingLot)");
+                    whereConditions.Add("(r.parking_lot = ANY (@ParkingLot))");
                 }
                 if (!string.IsNullOrWhiteSpace(query.SearchTerm))
                 {
-                    whereConditions.Add("(r.name LIKE '%' + @SearchTerm + '%' OR r.notes LIKE '%' + @SearchTerm + '%')");
+                    whereConditions.Add("(r.name ILIKE CONCAT('%', @SearchTerm, '%') OR r.notes ILIKE CONCAT('%', @SearchTerm, '%'))");
                 }
                 if (query.Tried != null)
                 {
