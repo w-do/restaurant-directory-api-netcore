@@ -20,6 +20,12 @@ namespace RestaurantDirectory.API.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet("test")]
+        public string Test()
+        {
+            return "hello, world!";
+        }
+
         [HttpPost]
         public async Task<Guid> CreateCity(AddCity.Command command)
         {
